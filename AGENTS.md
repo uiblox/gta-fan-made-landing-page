@@ -157,6 +157,8 @@ This file is the only context that carries between prompts and sessions. Keep it
 
 **Live loader:** fixed full screen, `linear-gradient(189deg, #1f1f38 0.55%, #18182d 30.38%, #111222 65.19%, #0c0d1b)`; logo 48u square, masked, colour pulse `#1f1f38` to `#38365d` (22% to 42%, back by 92%) and a skewed `#ffb2c6`/`#988bd0` bar sweeping top-left to bottom-right (blur 5px), 2.15s loop.
 
+**Scrollbar during the intro (fixed):** the intro canvas is 100vw x 150svh, so it stuck out 185px below the viewport (page scroll height 1085 at 900px tall), which created a vertical scrollbar; that narrowed the page by the scrollbar's width while the canvas stayed 100vw, so a horizontal scrollbar appeared too. Both vanished when the canvas was hidden at the end. Fix: `overflow: clip` on `.hero`. Headless Chrome uses overlay scrollbars, so the horizontal bar itself can't be reproduced there; the cause was confirmed by scroll height (1085 before, 900 after).
+
 **Intro performance:** headless software rendering (readback included) measured a median 15.6ms per frame at 1440x900 @2x and 9.2ms at 375x812 @3x; real GPUs are much faster. Not profiled on a real device yet.
 
 **Tools (more):** `tools/video-sheet.mjs` (contact sheet from a recording; no ffmpeg on this machine), `tools/intro-sheet.mjs` (steps our `window.__intro` timeline, sets `__introHold`), `tools/intro-handoff.mjs` (canvas vs poster diff), `tools/alpha-bbox.mjs`. Never return a GSAP timeline from `page.evaluate` (it hangs).

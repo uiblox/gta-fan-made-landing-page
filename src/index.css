@@ -151,6 +151,9 @@ body {
   height: 100svh;
   padding-inline: var(--pad);
   box-sizing: border-box;
+  /* The intro canvas is 100vw x 150svh and flies pieces in from beyond the frame; clip it to the hero so it can't
+     add scroll height, which (with a visible scrollbar) makes the 100vw canvas wider than the page. */
+  overflow: clip;
 }
 
 .hero__frame { width: min(100%, 120svh); container-type: inline-size; }
