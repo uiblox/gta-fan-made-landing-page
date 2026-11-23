@@ -2,17 +2,34 @@ import { useCallback, useEffect, useState } from 'react'
 import Loader from './components/Loader'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
+import Watch from './components/Watch'
+import Services from './components/Services'
+import { ScrollTrigger, REDUCED as REDUCED_SCROLL, lockScroll, startSmoothScroll, unlockScroll } from './lib/scroll'
 import { artSet, preloadHero } from './lib/hero-assets'
 
 // <html data-intro> is 'active' until the intro ends: it hides the poster and the UI, which the intro fades in.
 const setIntroAttr = (v) => { document.documentElement.dataset.intro = v }
 const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
+// Always start at the top: the intro and the hero's pin both assume it.
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
+window.scrollTo(0, 0)
+if (!REDUCED_SCROLL) lockScroll()
+
 export default function App() {
   const [phase, setPhase] = useState('loading') // loading -> playing -> done
   const [loaderOut, setLoaderOut] = useState(false)
   const [assets, setAssets] = useState(false) // fonts and images loaded
   const [prepared, setPrepared] = useState(REDUCED) // intro layers pre-rendered and warmed up (nothing to prepare with reduced motion)
+
+  // Smooth scrolling from the start; layout-dependent triggers are re-measured once fonts and images are in.
+  useEffect(() => {
+    startSmoothScroll()
+    const refresh = () => ScrollTrigger.refresh()
+    window.addEventListener('load', refresh)
+    document.fonts?.ready.then(refresh)
+    return () => window.removeEventListener('load', refresh)
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -30,6 +47,7 @@ export default function App() {
       setIntroAttr('done')
       setPhase('done')
       setLoaderOut(true)
+      unlockScroll()
       return
     }
     setPhase('playing')
@@ -43,6 +61,7 @@ export default function App() {
   const onDone = useCallback(() => {
     setIntroAttr('done') // synchronous: poster and canvas swap in the same frame
     setPhase('done')
+    unlockScroll()
   }, [])
 
   return (
@@ -51,6 +70,8 @@ export default function App() {
       <Navbar />
       <main>
         <Hero phase={phase} enabled={!REDUCED} onPrepared={onPrepared} onDone={onDone} />
+        <Watch />
+        <Services />
       </main>
     </>
   )

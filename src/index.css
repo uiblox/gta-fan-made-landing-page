@@ -26,6 +26,9 @@
   --color-ink: #0c0d1b;
 }
 
+/* Scaled and oversized layers (scene content at 1.05, video push-in, the 200vw glow, the intro canvas) must never create a horizontal scrollbar. */
+html, body, main { overflow-x: clip; }
+
 body {
   margin: 0;
   background: var(--color-ink);
@@ -118,7 +121,7 @@ body {
   text-decoration: none;
   white-space: nowrap;
 }
-.nav__pill[data-visible='false'] { visibility: hidden; opacity: 0; }
+.nav__pill { visibility: hidden; opacity: 0; } /* revealed by the scroll trigger in Navbar.jsx */
 
 .nav__menu {
   flex-direction: column;

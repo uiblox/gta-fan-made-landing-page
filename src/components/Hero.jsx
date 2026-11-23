@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
+import { REDUCED as REDUCED_MOTION, isMobile } from '../lib/scroll'
 import { HERO, LINKS, SITE } from '../content'
 import { artSet, loadImage } from '../lib/hero-assets'
 import { createIntro, introLayers } from '../lib/intro'
@@ -12,6 +13,7 @@ import logoMobile from '/assets/site/hero/mobile/poster-logo.avif'
 const PORTRAIT = '(max-aspect-ratio: 1/1)'
 
 export default function Hero({ phase, enabled, onPrepared, onDone }) {
+  const root = useRef(null)
   const canvas = useRef(null)
   const art = useRef(null)
   const intro = useRef(null)
@@ -53,8 +55,28 @@ export default function Hero({ phase, enabled, onPrepared, onDone }) {
     else if (!window.__introHold) intro.current.tl.play() // tools set __introHold to step the timeline by hand
   }, [phase, onDone])
 
+  // Scroll exit (live: pinned hero, pinSpacing off, scrubbed over one viewport). Created once the intro has finished, so it never
+  // fights the intro's own opacity tweens. Timeline is 180 units long: the logo fades last.
+  useEffect(() => {
+    if (phase !== 'done' || REDUCED_MOTION) return
+    const el = root.current
+    const ctx = gsap.context(() => {
+      const mobile = isMobile()
+      const tl = gsap.timeline({
+        defaults: { duration: 100, ease: 'none' },
+        scrollTrigger: { trigger: el, pin: true, pinSpacing: false, start: 'top top', end: 'bottom top', scrub: true, refreshPriority: 3 },
+      })
+      tl.fromTo('.hero__chevron', { autoAlpha: 1 }, { autoAlpha: 0, duration: 40, ease: 'circ.out' }, 0)
+      tl.fromTo(el, { scale: 1 }, { scale: mobile ? 0.85 : 0.9 }, 0)
+      tl.fromTo('.hero__tagline, .hero__cta, .hero__tags, .hero__fan, .hero__art picture:first-of-type', { autoAlpha: 1 }, { autoAlpha: 0, duration: 70, ease: 'power3.out' }, 50)
+      tl.fromTo(el, { pointerEvents: 'auto' }, { pointerEvents: 'none', duration: 0 }, 50)
+      tl.fromTo('.hero__art picture:nth-of-type(2)', { autoAlpha: 1 }, { autoAlpha: 0, duration: 130, ease: 'power3.out' }, 50)
+    }, el)
+    return () => ctx.revert()
+  }, [phase])
+
   return (
-    <section className="hero" id="top">
+    <section className="hero" id="top" ref={root}>
       <h1 className="sr-only">{HERO.logoAlt}</h1>
       <div className="hero__frame">
         <div className="hero__inner">

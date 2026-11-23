@@ -123,15 +123,21 @@ This file is the only context that carries between prompts and sessions. Keep it
 
 **Done:** scaffold; dark page, measured background, local fonts, favicon; static **navbar** and **hero** layout with scroll chevron (diffed against live, see Open differences); **loader** (`Loader.jsx`) and **hero intro** (`lib/intro.js`, driven from `Hero.jsx` and `App.jsx`). Flow: loader shows until fonts + all hero images are loaded (`preloadHero`) AND the intro is prepared (`createIntro`: layers pre-scaled, cropped, silhouettes and glows pre-rendered, canvas warmed up; a frame is a few small draws), then the intro starts behind it, the loader fades out 1.2s later (0.5s fade), the UI fades in at intro time 2.8s (0.8s). Reduced motion skips all of it (static poster, UI visible).
 
+**Also done (scroll pass):** Lenis (lerp 0.07, wheel x1.2, off on touch; page is locked until the intro ends; `lib/scroll.js`); **hero scroll-away** (pinned, pinSpacing off, scrub over 100svh, scale .9/.85 on phones, fades at 50/70/130 of a 180-unit timeline, ported from live code, built after the intro in `Hero.jsx`); **navbar pill** fades in 0.3s when the hero frame is scrolled 40% of a viewport past (`Navbar.jsx`); **Meet the Developer** (`Watch.jsx`: pinned scene fading up from dark, play button, wide featured card, project-card rail) and **Services** (`Services.jsx`: pinned video backdrop scrubbed by scroll, two cards). Shared `Card.jsx`; styles in `src/sections.css`; content in `content.js` (`WATCH`, `SERVICES`).
+
 **In progress:** none.
 
-**Next:** Lenis; hero scroll-away and navbar pill reveal; chevron pulse; menu panel; then the sections in the page map.
+**Next:** Miami, USA. (city video, `hosted-media.json` key `city`) and the four wide cards; Clients; Blog; Footer; menu panel; chevron pulse; cursor glow.
 
 **Open differences:**
 - Intro timeline is ported from the live code (exact z, delays, eases) but played at `INTRO_SPEED = 0.85` (in `lib/intro.js`, about 4.9s) so the pieces can be followed; set it to 1 for the live pace. Checked by stepping our timeline against the recording by eye (contact sheets); not diffed frame by frame. Loader fade-out length (0.5s), the 1.2s overlap and the UI fade (2.8s start, 0.8s, sine.inOut) are read off the recording, not from code. Mobile shard-to-piece mapping is a guess (reading order).
 - The intro's last canvas frame differs from the `<img>` poster only by resampling (mean 8/255 on desktop edges, 17 on 375x812); gutters, pieces and logo align. We crossfade (0.25s) instead of a hard swap. On phones the poster asset is 640px against 1366px layers, so it is softer than the canvas.
 - Loader logo is our wordmark at 84u wide (live: a 48u square mark); its drop-shadow and pulse/shine come from live.
-- Hero: no scroll motion yet; chevron has no opacity pulse (live: 1s, 0.5 to 1, alternate); nav pill stays hidden; menu button does nothing.
+- Hero: chevron has no opacity pulse (live: 1s, 0.5 to 1, alternate); menu button does nothing. Hero exit ported from live code but not yet diffed frame by frame against `02-hero-scroll.mov`.
+- Cursor glow not built (live fades it in/out through these sections: Watch 0.5 to 0 over the pin, back to 0.5 at the cards, off after).
+- Scroll sections: checked by eye at 1440x900 and 375x812 (contact sheets via `tools/scroll-sheet.mjs`), plus measured sizes in u at 768, 1024, 1440, 1920, 2560, 375, 667x375 (`tools/rects-u.mjs`); NOT yet diffed against localhost numerically, and 768/1024/1920/2560 and phone landscape not yet viewed. Phone-landscape type sizes on live are svh-based (e.g. h2 6.75svh); ours use rough u values. Headline size steps below 23 characters, card text side (tall and short cards keep text right) and scrim gradients are ours; project-card art uses top crop so painted titles stay in frame.
+- Services video: the 34-frame clip plays over the first 60% of the scroll range then holds its last frame (`CLIP_END` in `Services.jsx`), about 48px of scroll per frame at 1440x900. Live's section is ~97px taller between the video and the cards than our 135svh; ignored.
+- Reduced motion: sections render static in normal flow (CSS) with the pill shown after the hero; not yet checked in a browser with the preference on. Keyboard: cards and play are links with the global focus outline; rail scrolls natively.
 - Live frame sits below a 60px promo banner; we have none, so ours is 30px higher.
 - Our tagline is longer than "Now Available" (font capped with `cqw`; 600x900 frame 646px vs live 651px). Tag pills are one row; live has two stacked logos.
 - Fonts: live uses proprietary ArtDeco; ours are Outfit and Barlow Condensed (button and pill widths differ). GTD monogram is a placeholder.
@@ -140,6 +146,10 @@ This file is the only context that carries between prompts and sessions. Keep it
 ## Findings
 
 **Colours:** body background on rockstargames.com/VI is `rgb(12, 13, 27)` = `#0c0d1b` (measured at 1440 wide with headless Chrome, which received the real page: matches the screenshot). Live favicon is a 48×48 icon; ours is 96×96 PNG from the logo poster (`tools/make-favicon.mjs`).
+
+**Live scroll structure (chunk 34 of the live JS, measured at 1440x900):** every section starts 65svh above where the previous one ends. Hero: fixed, pinned. Watch scene: 135svh tall, pinned from its top until the cards' top reaches the top; cards section has margin-top 135svh. Services: same pattern (video wrapper 135svh pinned, promo cards margin-top 135svh). Card scale .985 to 1 across its pass; card art 1.0812 scaled. Breakpoint "mobile" = max-width 767.98px. Sizes per width tier are tokens in `sections.css`; card/headline sizes in u are identical from 1440 up.
+
+**Video renditions:** Cloudinary `g_auto` must be its own transformation component. Portrait crop `c_fill,ar_9:16,w_720,g_auto` returns a 1.125s clip (fps retimed), landscape 1.417s (34 frames); scrub maps by duration.
 
 **Tooling:** headless Chrome is launched with `channel: 'chrome'` (the installed Google Chrome); the playwright-managed Chromium in the cache doesn't launch.
 
@@ -160,6 +170,8 @@ This file is the only context that carries between prompts and sessions. Keep it
 **Scrollbar during the intro (fixed):** the intro canvas is 100vw x 150svh, so it stuck out 185px below the viewport (page scroll height 1085 at 900px tall), which created a vertical scrollbar; that narrowed the page by the scrollbar's width while the canvas stayed 100vw, so a horizontal scrollbar appeared too. Both vanished when the canvas was hidden at the end. Fix: `overflow: clip` on `.hero`. Headless Chrome uses overlay scrollbars, so the horizontal bar itself can't be reproduced there; the cause was confirmed by scroll height (1085 before, 900 after).
 
 **Intro performance:** headless software rendering (readback included) measured a median 15.6ms per frame at 1440x900 @2x and 9.2ms at 375x812 @3x; real GPUs are much faster. Not profiled on a real device yet.
+
+**Tools (scroll pass):** `tools/page-outline.mjs` (section structure), `tools/rects-u.mjs` (sizes in u), `tools/styles.mjs` (raw computed props), `tools/scroll-sheet.mjs` and `tools/shot.mjs` (screenshots at scroll positions).
 
 **Tools (more):** `tools/video-sheet.mjs` (contact sheet from a recording; no ffmpeg on this machine), `tools/intro-sheet.mjs` (steps our `window.__intro` timeline, sets `__introHold`), `tools/intro-handoff.mjs` (canvas vs poster diff), `tools/alpha-bbox.mjs`. Never return a GSAP timeline from `page.evaluate` (it hangs).
 

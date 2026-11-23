@@ -1,0 +1,471 @@
+/* ------------------------------------------------------------------
+   Meet the Developer + Services. Sizes are measured on rockstargames.com/VI (tools/rects-u.mjs) and written as
+   multiples of --u. The tokens below are unitless u counts, set per width tier:
+     A 1440+   B 1024-1439   C 768-1023   D phone portrait   E phone landscape
+   (live values are identical from 1440 up; between tiers they differ, so each tier has its own set.)
+   ------------------------------------------------------------------ */
+:root {
+  /* A: 1440+ */
+  --t-top: 32; /* scene text, space above */
+  --t-h2: 32;
+  --t-eyebrow: 12;
+  --t-gap: 8;
+  --play: calc(var(--u) * 56);
+  --card-pad: 26;
+  --card-text: 174; /* text block width */
+  --w-h4: 28;
+  --w-q: 9;
+  --btn-h: 23.6;
+  --btn-fs: 8;
+  --btn-pl: 9;
+  --btn-pr: 12;
+  --btn-gap: 4;
+  --btn-mt: 6;
+  --btn-icon: 10;
+  --p-h4: 26;
+  --p-q: 10;
+  --p-padx: 16;
+  --p-padb: 26;
+  --p-play: 31.5;
+  --p-ratio: 0.74;
+  --tall-h4: 34;
+  --tall-p: 9;
+  --short-h4: 28;
+  --short-p: 8;
+  --sec-pad-y: 64;
+  --sec-gap: 16;
+  --rail-gap: 22.5px;
+  --cols: 3;
+  --radius: 14;
+
+  --c-wide: #38365d;
+  --c-project: #252644;
+  --c-tall: #4b2f54;
+  --c-short: #243152;
+  --c-title: #fff9cb;
+}
+@media (min-width: 1920px) { :root { --rail-gap: 25px; } }
+@media (min-width: 2560px) { :root { --rail-gap: 27.5px; } }
+/* B */
+@media (min-width: 1024px) and (max-width: 1439.98px) {
+  :root { --t-top: 28; --play: 10svh; --p-h4: 36; --p-padx: 26; --p-ratio: 0.784; --cols: 2; --rail-gap: 18px; }
+}
+/* C */
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  :root { --t-top: 24; --play: 10svh; --p-h4: 36; --p-padx: 26; --p-ratio: 0.767; --cols: 2; --rail-gap: 16px; }
+}
+/* D */
+@media (max-width: 767.98px) and (orientation: portrait) {
+  :root {
+    --t-top: 40; --t-h2: 16; --t-eyebrow: 10; --t-gap: 6; --play: 10svh;
+    --w-h4: 22; --w-q: 8; --btn-h: 19.7; --btn-fs: 7; --btn-pl: 8; --btn-pr: 10; --btn-gap: 3; --btn-mt: 5; --btn-icon: 8;
+    --p-h4: 24; --p-q: 8; --p-padx: 16; --p-padb: 16; --p-ratio: 0.763;
+    --tall-h4: 22; --tall-p: 8; --short-h4: 18; --short-p: 8;
+    --sec-pad-y: 40; --cols: 1; --rail-gap: 12px; --radius: 6;
+  }
+}
+/* E */
+@media (max-width: 767.98px) and (orientation: landscape) {
+  :root {
+    --t-top: 12; --play: 10svh;
+    --card-pad: 12; --card-text: 86;
+    --w-h4: 12; --w-q: 5; --btn-h: 15.8; --btn-fs: 6; --btn-pl: 5; --btn-pr: 7; --btn-gap: 2; --btn-mt: 4; --btn-icon: 6;
+    --p-h4: 14; --p-q: 5; --p-padx: 16; --p-padb: 16; --p-ratio: 0.78;
+    --tall-h4: 12; --tall-p: 5; --short-h4: 12; --short-p: 5;
+    --sec-pad-y: 40; --cols: 2; --rail-gap: 12px; --radius: 6;
+  }
+}
+
+/* ------------------------- Meet the Developer ------------------------- */
+.watch {
+  position: relative;
+  margin-top: -65svh; /* live: the scene starts 65svh above the end of the hero, so it is already pinned as the hero leaves */
+}
+.watch__scene {
+  position: relative;
+  z-index: 0;
+  height: 135svh;
+}
+.watch__bgwrap {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 100svh;
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
+  filter: brightness(0.2);
+}
+.watch__bg,
+.watch__bg img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.watch__bg { transform-origin: 50% 50%; }
+.watch__bg img { object-fit: cover; object-position: 50% 15%; }
+
+.watch__content {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 100svh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: calc(var(--u) * var(--t-top)) var(--pad) calc(var(--u) * 16);
+  transform-origin: 50% 50%;
+  pointer-events: none;
+}
+.watch__text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--u) * var(--t-gap));
+  width: min(100%, calc(var(--u) * 357.5));
+  text-align: center;
+  visibility: hidden;
+  opacity: 0;
+}
+.watch__eyebrow,
+.watch__title { margin: 0; text-transform: uppercase; }
+.watch__eyebrow {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: calc(var(--u) * var(--t-eyebrow));
+  line-height: 1.1;
+  letter-spacing: 0.015em;
+  color: #fbd9e0;
+}
+.watch__title {
+  font-weight: 700;
+  font-size: calc(var(--u) * var(--t-h2));
+  line-height: 1.1;
+  letter-spacing: 0.15em;
+  color: #fff;
+  text-shadow: 0 0 32px rgb(255 255 255 / 0.3);
+  text-wrap: balance;
+}
+.watch__play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--play);
+  height: var(--play);
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgb(17 17 23 / 0.2);
+  color: rgb(255 255 255 / 0.9);
+  opacity: 0;
+  pointer-events: none;
+  transition: scale 0.5s ease-out, box-shadow 0.5s ease-out;
+}
+.watch__play svg { width: 34%; height: 34%; margin-left: 4%; }
+.watch__play:hover,
+.watch__play:focus-visible { scale: 1.05; box-shadow: 0 0 60px rgb(255 255 255 / 0.35); }
+
+.watch__cards {
+  position: relative;
+  z-index: 2;
+  margin-top: 135svh; /* the scene stays pinned for this long, then the cards arrive */
+  box-sizing: border-box;
+  padding: calc(var(--u) * var(--sec-pad-y)) var(--pad);
+  display: grid;
+  gap: calc(var(--u) * var(--sec-gap));
+}
+
+/* Rail: the project cards. 3 visible from 1440, 2 from 768 (the rest scroll sideways), 1 on phones in portrait. */
+.rail {
+  display: flex;
+  margin-left: calc(var(--rail-gap) * -1);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  /* room for the card's hover glow and focus outline, cancelled by the same margin */
+  padding-block: 6px;
+  margin-block: -6px;
+}
+.rail::-webkit-scrollbar { display: none; }
+.rail__col {
+  flex: 0 0 calc(100% / var(--cols));
+  box-sizing: border-box;
+  padding-left: var(--rail-gap);
+  scroll-snap-align: start;
+}
+
+/* ------------------------------ Cards ------------------------------ */
+.card {
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+  overflow: hidden;
+  width: 100%;
+  border-radius: calc(var(--u) * var(--radius));
+  background: var(--card-bg, var(--c-wide));
+  color: #fff;
+  text-decoration: none;
+  transform-origin: 50% center;
+  outline-offset: 4px;
+  user-select: none;
+}
+.card picture {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0.8;
+  transform: scale(1.0812);
+  transform-origin: 50% center;
+}
+.card picture img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.card::after { /* scrim on the side the text sits, so copy stays readable over the art */
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: var(--scrim, none);
+}
+
+.card__text {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 4);
+  max-width: calc(var(--u) * var(--card-text));
+  transition: filter 1s ease-out;
+}
+.card:hover .card__text,
+.card:focus-visible .card__text { filter: drop-shadow(0 0 10px rgb(0 0 0 / 0.35)) drop-shadow(0 20px 70px rgb(0 0 0 / 0.45)); }
+
+.card__eyebrow,
+.card__title,
+.card__copy { margin: 0; text-wrap: balance; }
+.card__eyebrow {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: calc(var(--u) * 9);
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  color: #f1eaff;
+}
+.card__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 0.9;
+  letter-spacing: 0.005em;
+  color: var(--c-title);
+}
+.card__copy {
+  font-size: calc(var(--u) * 8);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+  color: #fff;
+}
+.card__btn {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: calc(var(--u) * var(--btn-gap));
+  height: calc(var(--u) * var(--btn-h));
+  margin-top: calc(var(--u) * var(--btn-mt));
+  padding: 0 calc(var(--u) * var(--btn-pr)) 0 calc(var(--u) * var(--btn-pl));
+  border-radius: 999px;
+  background: var(--btn-bg, #fdfbff);
+  color: var(--btn-fg, #070810);
+  font-size: calc(var(--u) * var(--btn-fs));
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+  backdrop-filter: blur(6.25px);
+}
+.card__btn svg { width: calc(var(--u) * var(--btn-icon)); height: calc(var(--u) * var(--btn-icon)); flex: none; }
+.card__btn svg:first-child { width: calc(var(--u) * var(--btn-icon) * 0.8); }
+
+.card__play {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  left: 50%;
+  width: calc(var(--u) * var(--p-play));
+  height: calc(var(--u) * var(--p-play));
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgb(17 17 23 / 0.4);
+  color: #fff;
+  transition: scale 0.5s ease-out, box-shadow 0.5s ease-out;
+}
+.card__play svg { width: 36%; height: 36%; margin-left: 4%; }
+.card:hover .card__play,
+.card:focus-visible .card__play { scale: 1.05; box-shadow: 0 0 60px rgb(255 255 255 / 0.35); }
+
+/* Headline sizes by title length tier (live: getHeadlineSize); the steps below 23 characters are ours. */
+.card--wide .card__title { font-size: calc(var(--u) * var(--w-h4)); }
+.card--wide .card__eyebrow { font-size: calc(var(--u) * var(--w-q)); }
+.card--tall .card__title { font-size: calc(var(--u) * var(--tall-h4)); }
+.card--short .card__title { font-size: calc(var(--u) * var(--short-h4)); }
+.card--project .card__title { font-size: calc(var(--u) * var(--p-h4)); }
+.card--project .card__title[data-tier='3'] { font-size: calc(var(--u) * var(--p-h4) * 0.8); }
+.card--project .card__title[data-tier='4'],
+.card--project .card__title[data-tier='5'] { font-size: calc(var(--u) * var(--p-h4) * 0.7); }
+.card--tall .card__copy { font-size: calc(var(--u) * var(--tall-p)); line-height: 1.3; }
+.card--short .card__copy { font-size: calc(var(--u) * var(--short-p)); }
+
+/* Wide (featured): 5:2, text bottom left. */
+.card--wide {
+  --card-bg: var(--c-wide);
+  --scrim: linear-gradient(90deg, rgb(56 54 93 / 0.85) 0%, rgb(56 54 93 / 0.45) 30%, rgb(56 54 93 / 0) 55%), linear-gradient(0deg, rgb(56 54 93 / 0.5) 0%, rgb(56 54 93 / 0) 40%);
+  aspect-ratio: 5 / 2;
+  align-items: flex-end;
+  padding: calc(var(--u) * var(--card-pad));
+}
+.card--wide .card__text { align-items: flex-start; gap: calc(var(--u) * 4); }
+
+/* Project cards: art already carries its title and a soft bottom third; text centred at the bottom. */
+.card--project picture { transform-origin: 50% 0; } /* the art paints its title at the top: keep it in frame */
+.card--project {
+  --card-bg: var(--c-project);
+  --scrim: linear-gradient(0deg, rgb(37 38 68 / 0.85) 0%, rgb(37 38 68 / 0.45) 30%, rgb(37 38 68 / 0) 55%);
+  aspect-ratio: var(--p-ratio);
+  align-items: flex-end;
+}
+.card--project .card__text {
+  width: 100%;
+  max-width: none;
+  align-items: center;
+  gap: calc(var(--u) * 6);
+  padding: 0 calc(var(--u) * var(--p-padx)) calc(var(--u) * var(--p-padb));
+  text-align: center;
+}
+.card--project .card__eyebrow { font-size: calc(var(--u) * var(--p-q)); line-height: 1.1; letter-spacing: 0.0175em; color: #e5ddff; }
+
+/* Services cards. Both keep their text on the right: the tall art's sign sits left of centre, the short art's developer left of centre. */
+.card--tall {
+  --card-bg: var(--c-tall);
+  --btn-bg: #ffd4a8;
+  --btn-fg: #0f0c1a;
+  --scrim: linear-gradient(270deg, rgb(75 47 84 / 0.75) 0%, rgb(75 47 84 / 0.5) 26%, rgb(75 47 84 / 0) 52%);
+  aspect-ratio: 1641 / 887;
+  align-items: center;
+  justify-content: flex-end;
+  padding: calc(var(--u) * var(--card-pad));
+}
+.card--tall .card__text { --card-text: 181.2; gap: calc(var(--u) * 6); }
+.card--short {
+  --card-bg: var(--c-short);
+  --btn-bg: #e6ffa3;
+  --btn-fg: #0d0c1a;
+  --scrim: linear-gradient(270deg, rgb(36 49 82 / 0.92) 0%, rgb(36 49 82 / 0.7) 24%, rgb(36 49 82 / 0) 50%);
+  aspect-ratio: 5 / 2;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: calc(var(--u) * var(--card-pad));
+}
+.card--short .card__text { --card-text: 181.2; }
+.card--short .card__eyebrow { color: #b8f0ea; }
+
+/* Phones in portrait: art on top fading to the card colour, text at the bottom. */
+@media (max-width: 767.98px) and (orientation: portrait) {
+  .card { flex-direction: column; justify-content: flex-end; padding: 0; }
+  .card picture {
+    mask-image: linear-gradient(0deg, rgb(0 0 0 / 0.28) 0%, rgb(0 0 0 / 0.48) 52%, #000 87%);
+  }
+  .card::after { display: none; }
+  .card .card__text {
+    width: 100%;
+    max-width: none;
+    padding: 0 calc(var(--u) * 16) calc(var(--u) * 16);
+    box-sizing: border-box;
+    gap: calc(var(--u) * 4);
+  }
+  .card--wide { aspect-ratio: 0.63; align-items: stretch; }
+  .card--wide .card__text,
+  .card--project .card__text { align-items: center; text-align: center; }
+  .card--wide .card__btn { align-self: center; }
+  .card--tall { aspect-ratio: 0.636; align-items: stretch; }
+  .card--short { aspect-ratio: 0.712; align-items: stretch; }
+  .card--tall .card__text,
+  .card--short .card__text { align-items: flex-start; text-align: left; }
+  .card--tall .card__text { gap: calc(var(--u) * 4); }
+}
+
+/* ------------------------------ Services ------------------------------ */
+.services {
+  position: relative;
+  overflow-x: clip; /* the backdrop glow is wider than the page */
+}
+.services__wrap {
+  position: relative;
+  z-index: 1;
+  height: 135svh;
+  margin-top: -65svh;
+  visibility: hidden;
+  opacity: 0;
+  filter: brightness(0.2);
+}
+.services__stage {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 100svh;
+  overflow: hidden;
+  transform-origin: 50% 50%;
+  background: var(--color-ink);
+}
+.services__stage picture,
+.services__poster,
+.services__video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.services__poster,
+.services__video { object-fit: cover; }
+.services__video { opacity: 0; }
+.services__video.is-ready { opacity: 1; }
+
+.services__promo {
+  position: relative;
+  z-index: 2;
+  margin-top: 135svh; /* the video stays pinned for this long, then the cards arrive */
+  box-sizing: border-box;
+  display: grid;
+  gap: calc(var(--u) * var(--sec-gap));
+  padding: 0 var(--pad) calc(var(--u) * var(--sec-pad-y));
+}
+.services__backdrop {
+  position: absolute;
+  z-index: -1;
+  top: -12svh;
+  left: 50%;
+  width: 200vw;
+  height: 100svh;
+  translate: -50% 0;
+  border-radius: 1000px;
+  background: radial-gradient(100% 50% at 50% 50%, #18182d 0%, rgb(0 0 0 / 0) 90%);
+  pointer-events: none;
+}
+
+/* Reduced motion: no pins, scrubbing or fades. Everything sits in normal flow, readable, with the video's first frame as a still. */
+@media (prefers-reduced-motion: reduce) {
+  .watch { margin-top: 0; }
+  .watch__scene { height: 100svh; }
+  .watch__bgwrap { visibility: visible; opacity: 1; filter: none; }
+  .watch__text { visibility: visible; opacity: 1; }
+  .watch__play { opacity: 1; pointer-events: auto; }
+  .watch__cards { margin-top: 0; }
+  .services__wrap { height: 100svh; margin-top: 0; visibility: visible; opacity: 1; filter: none; }
+  .services__promo { margin-top: 0; }
+  .card picture { transform: none; }
+  .card, .card__play, .watch__play, .card__text { transition: none; }
+}
