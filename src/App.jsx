@@ -4,6 +4,11 @@ import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Watch from './components/Watch'
 import Services from './components/Services'
+import Miami from './components/Miami'
+import Highlights from './components/Highlights'
+import Clients from './components/Clients'
+import Blog from './components/Blog'
+import Footer from './components/Footer'
 import { ScrollTrigger, REDUCED as REDUCED_SCROLL, lockScroll, startSmoothScroll, unlockScroll } from './lib/scroll'
 import { artSet, preloadHero } from './lib/hero-assets'
 
@@ -72,7 +77,12 @@ export default function App() {
         <Hero phase={phase} enabled={!REDUCED} onPrepared={onPrepared} onDone={onDone} />
         <Watch />
         <Services />
+        <Miami />
+        <Highlights />
+        <Clients />
+        <Blog />
       </main>
+      <Footer />
     </>
   )
 }

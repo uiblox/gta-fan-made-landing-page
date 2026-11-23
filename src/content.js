@@ -11,6 +11,25 @@ export const LINKS = {
   projectLanguageApp: '#',
   codeRescue: '#',
   fullStack: '#',
+  openToWork: '#',
+  afterHours: '#',
+  caseStudy: '#',
+  offTheClock: '#',
+  clients: '#',
+  clientsAll: '#',
+  review: '#',
+  blog: '#',
+  post1: '#',
+  post2: '#',
+  post3: '#',
+  buildYourOwn: '#',
+  github: '#',
+  linkedin: '#',
+  x: '#',
+  youtube: '#',
+  email: '#',
+  resume: '#',
+  privacy: '#',
 }
 
 export const SITE = {
@@ -66,4 +85,54 @@ export const SERVICES = {
       link: 'fullStack',
     },
   ],
+}
+
+export const MIAMI = {
+  title: 'Miami, USA.',
+  bio: "I'm Jarvis, a full-stack developer who has spent eight years building products for startups, agencies and teams that need to ship fast without breaking things. I work across the whole stack, from the interface people see to the API and database behind it, and I care about code the next developer will thank me for.",
+}
+
+// Four wide cards. `side` is where the text sits, so each card's text lands where its art leaves room.
+export const HIGHLIGHTS = [
+  { eyebrow: 'Status', title: 'Open to Work', text: "Available for freelance and contract work from spring 2027, remote or on site in Miami.", cta: 'Hire Me', link: 'openToWork', side: 'left' },
+  { eyebrow: 'Community', title: 'After Hours', text: "When the deploy's done, I'm out with Miami's dev crowd: meetups, talks and the occasional late-night hackathon.", cta: 'View All', link: 'afterHours', side: 'right' },
+  { eyebrow: 'Case Study', title: 'The Heist: Shipped in Six Weeks', text: "How I rebuilt a booking platform's checkout and cut drop-offs by 31%.", cta: 'Read the Case Study', link: 'caseStudy', side: 'left' },
+  { eyebrow: 'Personal', title: 'Off the Clock', text: 'Open-source contributor, weekend game jammer and the one who always brings the coffee to the meetup.', cta: 'More About Me', link: 'offTheClock', side: 'right' },
+]
+
+export const CLIENTS = {
+  title: 'Clients',
+  link: 'View All',
+  cards: [
+    { eyebrow: 'Sample Clients', title: 'Startups, Agencies and Product Teams', cta: 'See All Clients', link: 'clientsAll' },
+    { eyebrow: 'Sample Review', title: '\u201cIncredibly fast, detail-oriented, and easy to work with.\u201d', cta: 'Read the Review', link: 'review' },
+  ],
+}
+
+export const BLOG = {
+  title: 'Blog',
+  link: 'View all',
+  posts: [
+    { title: '700 AI Agents Escaped and Became Hackers', date: 'November 3, 2026', link: 'post1' },
+    { title: 'Agentic Engineering in 2026', date: 'October 21, 2026', link: 'post2' },
+    { title: 'Think System Design & Architecture', date: 'October 8, 2026', link: 'post3' },
+  ],
+}
+
+export const FOOTER = {
+  logoAlt: 'Grand Theft Developer',
+  pill: { title: 'Build Your Own', text: "Want a portfolio like this? Here's how it was built, step by step." },
+  socials: [
+    { label: 'GitHub', link: 'github' },
+    { label: 'LinkedIn', link: 'linkedin' },
+    { label: 'X', link: 'x' },
+    { label: 'YouTube', link: 'youtube' },
+  ],
+  links: [
+    { label: 'Email', link: 'email' },
+    { label: 'R\u00e9sum\u00e9', link: 'resume' },
+    { label: 'Privacy', link: 'privacy' },
+  ],
+  badge: { title: 'Rated D for Developer', text: 'Clean Code, Mild Refactoring, Frequent Coffee.' },
+  copyright: '\u00a9 2026 Grand Theft Developer.',
 }

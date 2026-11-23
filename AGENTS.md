@@ -127,13 +127,18 @@ This file is the only context that carries between prompts and sessions. Keep it
 
 **In progress:** none.
 
-**Next:** Miami, USA. (city video, `hosted-media.json` key `city`) and the four wide cards; Clients; Blog; Footer; menu panel; chevron pulse; cursor glow.
+**Also done (rest of page):** `Miami.jsx` (city video pinned 350svh and scrubbed by scroll, radial-mask exit, bio in gradient text whose colours animate, ported from live code), `Highlights.jsx` (four wide cards, text alternating sides, reuses `Card` wide variant), `Clients.jsx` (two client cards, same `.rail`), `Blog.jsx` (three posts, same `.rail`), `Footer.jsx` (logo, Build Your Own pill, socials, links, badge, disclaimer; fades in). `lib/scrub-video.js` is shared by Services and Miami. The page is complete top to bottom.
+
+**In progress:** none.
+
+**Next:** menu panel; chevron pulse; cursor glow; then the diff pass (every section vs live at 375, 768, 1024, 1440, 1920, 2560 and phone landscape, frame by frame against the recordings).
 
 **Open differences:**
 - Intro timeline is ported from the live code (exact z, delays, eases) but played at `INTRO_SPEED = 0.85` (in `lib/intro.js`, about 4.9s) so the pieces can be followed; set it to 1 for the live pace. Checked by stepping our timeline against the recording by eye (contact sheets); not diffed frame by frame. Loader fade-out length (0.5s), the 1.2s overlap and the UI fade (2.8s start, 0.8s, sine.inOut) are read off the recording, not from code. Mobile shard-to-piece mapping is a guess (reading order).
 - The intro's last canvas frame differs from the `<img>` poster only by resampling (mean 8/255 on desktop edges, 17 on 375x812); gutters, pieces and logo align. We crossfade (0.25s) instead of a hard swap. On phones the poster asset is 640px against 1366px layers, so it is softer than the canvas.
 - Loader logo is our wordmark at 84u wide (live: a 48u square mark); its drop-shadow and pulse/shine come from live.
 - Hero: chevron has no opacity pulse (live: 1s, 0.5 to 1, alternate); menu button does nothing. Hero exit ported from live code but not yet diffed frame by frame against `02-hero-scroll.mov`.
+- Rest of page checked by eye only (1440x900, 768x1024, 375x812 contact sheets); sizes come from `tools/rects-u.mjs` dumps of live at 768, 1024, 1440, 375, 667x375 but are not diffed numerically. Not viewed: 1920, 2560, 1024, phone landscape (overflow checked: none). Miami: pin runs 350svh vs live ~340svh. Footer logo is a still (live animates it with a scrollmation); no body-colour tween between sections (live changes the page background). Footer badge is our own 'D' mark (live has a rating image). Feature cards on phones show the 5:2 art whole with a blurred copy behind. CONTENT.md and the page map list FOUR wide cards (the request said three); four are built.
 - Cursor glow not built (live fades it in/out through these sections: Watch 0.5 to 0 over the pin, back to 0.5 at the cards, off after).
 - Scroll sections: checked by eye at 1440x900 and 375x812 (contact sheets via `tools/scroll-sheet.mjs`), plus measured sizes in u at 768, 1024, 1440, 1920, 2560, 375, 667x375 (`tools/rects-u.mjs`); NOT yet diffed against localhost numerically, and 768/1024/1920/2560 and phone landscape not yet viewed. Phone-landscape type sizes on live are svh-based (e.g. h2 6.75svh); ours use rough u values. Headline size steps below 23 characters, card text side (tall and short cards keep text right) and scrim gradients are ours; project-card art uses top crop so painted titles stay in frame.
 - Services video: the 34-frame clip plays over the first 60% of the scroll range then holds its last frame (`CLIP_END` in `Services.jsx`), about 48px of scroll per frame at 1440x900. Live's section is ~97px taller between the video and the cards than our 135svh; ignored.

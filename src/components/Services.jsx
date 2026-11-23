@@ -3,6 +3,7 @@ import { gsap, REDUCED, isMobile } from '../lib/scroll'
 import { LINKS, SERVICES } from '../content'
 import { PORTRAIT_PHONE, videoSources } from '../lib/media'
 import Card from './Card'
+import { attachScrubVideo } from '../lib/scrub-video'
 import tallDesktop from '/assets/site/services/card-tall-desktop.avif'
 import tallMobile from '/assets/site/services/card-tall-mobile.avif'
 import shortArt from '/assets/site/services/card-short.avif'
@@ -26,23 +27,7 @@ export default function Services() {
     const v = video.current
     const mobile = isMobile()
     const portrait = window.matchMedia(PORTRAIT_PHONE).matches
-    v.src = portrait ? SRC.portrait : SRC.landscape
-    v.load()
-
-    // Scrub: set currentTime from scroll progress, one seek at a time (a seek issued mid-seek just queues the latest target).
-    const state = { target: 0, ready: false }
-    const seek = () => {
-      if (!state.ready || v.seeking) return
-      if (Math.abs(v.currentTime - state.target) > 0.0005) v.currentTime = state.target
-    }
-    const onReady = () => {
-      if (!v.duration) return
-      state.ready = true
-      v.classList.add('is-ready')
-      seek()
-    }
-    v.addEventListener('loadeddata', onReady)
-    v.addEventListener('seeked', seek)
+    const scrub = attachScrubVideo(v, portrait ? SRC.portrait : SRC.landscape, CLIP_END)
 
     const ctx = gsap.context(() => {
       const def = { paused: true, defaults: { duration: 100, ease: 'none' } }
@@ -51,7 +36,7 @@ export default function Services() {
       // Progress drives the video.
       gsap.timeline({ ...def, scrollTrigger: {
         scrub: true, trigger: wrap.current, start: 'top top+=25%', endTrigger: promo.current, end: 'top top', invalidateOnRefresh: true,
-        onUpdate: ({ progress }) => { state.target = Math.min(1, progress / CLIP_END) * Math.max(0, (v.duration || 0) - 0.001); seek() },
+        onUpdate: ({ progress }) => scrub.set(progress),
       } })
       // Arrival: fade up from dark over one viewport.
       gsap.timeline({ ...def, scrollTrigger: { scrub: true, trigger: wrap.current, start: 'top top+=25%', end: '+=100%' } })
@@ -65,10 +50,7 @@ export default function Services() {
     })
     return () => {
       ctx.revert()
-      v.removeEventListener('loadeddata', onReady)
-      v.removeEventListener('seeked', seek)
-      v.removeAttribute('src')
-      v.load()
+      scrub.destroy()
     }
   }, [])
 

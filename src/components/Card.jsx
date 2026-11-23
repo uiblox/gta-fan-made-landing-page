@@ -13,8 +13,8 @@ export const ArrowIcon = () => (
 const headlineTier = (len) => (len > 40 ? 5 : len > 30 ? 4 : len > 23 ? 3 : len > 13 ? 2 : 1)
 
 // One card of the Meet the Developer / Services sections.
-// variant: wide | project | tall | short. art: { desktop, mobile?, pos? }. The card is a link; the button inside is part of it.
-export default function Card({ variant, href, eyebrow, title, text, cta, icon = 'play', art, centerPlay = false, className = '' }) {
+// variant: wide | project | tall | short | client. side: which side the text sits (wide cards). tone: CSS custom properties (colours). art: { desktop, mobile?, pos? }. The card is a link; the button inside is part of it.
+export default function Card({ variant, href, eyebrow, title, text, cta, icon = 'play', art, centerPlay = false, side = 'left', tone, className = '' }) {
   const root = useRef(null)
   const titleText = Array.isArray(title) ? title.join(' ') : title
 
@@ -48,7 +48,7 @@ export default function Card({ variant, href, eyebrow, title, text, cta, icon = 
   }, [])
 
   return (
-    <a ref={root} className={`card card--${variant} ${className}`} href={href}>
+    <a ref={root} className={`card card--${variant} card--${side} ${className}`} href={href} style={{ '--art': `url(${art.desktop})`, ...tone }}>
       <picture>
         {art.mobile && <source media={PORTRAIT_PHONE} srcSet={art.mobile} />}
         <img src={art.desktop} alt="" loading="lazy" style={art.pos ? { objectPosition: art.pos } : undefined} />
