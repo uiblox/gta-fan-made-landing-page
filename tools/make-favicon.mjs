@@ -3,7 +3,7 @@ import { chromium } from 'playwright-core'
 import { pathToFileURL } from 'node:url'
 import { resolve } from 'node:path'
 
-const src = pathToFileURL(resolve('src/assets/brand/logo-poster.png')).href
+const src = pathToFileURL(resolve('assets/brand/logo-poster.png')).href
 const browser = await chromium.launch({ channel: 'chrome' })
 for (const [size, out, bg] of [[96, 'public/favicon.png', null], [180, 'public/apple-touch-icon.png', '#0c0d1b']]) {
   const page = await browser.newPage({ viewport: { width: size, height: size } })
